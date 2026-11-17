@@ -4,9 +4,17 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     app_name: str = "Cloud File Storage"
 
+    # Database
     database_url: str
-    
+
+    # AWS
+
     aws_region: str
+
+    # S3
+    s3_bucket_name: str
+
+    # Cognito
     cognito_user_pool_id: str
     cognito_client_id: str
     cognito_client_secret: str | None = None

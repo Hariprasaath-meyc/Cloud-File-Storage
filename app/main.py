@@ -2,6 +2,7 @@ from fastapi import FastAPI
 
 from app.core.exception_handlers import register_exception_handlers
 from app.modules.auth.router import router as auth_router
+from app.modules.files.router import router as files_router
 from app.core.exceptions import (
     AuthenticationException,
     ResourceNotFoundException,
@@ -16,6 +17,8 @@ app =FastAPI(
 register_exception_handlers(app)
 
 app.include_router(auth_router)
+
+app.include_router(files_router, prefix="/api/v1")
 
 @app.get("/health")
 async def health_check():
