@@ -22,3 +22,18 @@ class CognitoClient:
 
 cognito = CognitoClient()
 cognito_client = cognito.idp
+
+def get_user_details(access_token: str) -> dict:
+    response = cognito_client.get_user(
+        AccessToken=access_token
+    )
+
+    attributes = {
+        item["Name"]: item["Value"]
+        for item in response["UserAttributes"]
+    }
+
+    return {
+        "sub": attributes["sub"],
+        "email": attributes["email"],
+    }

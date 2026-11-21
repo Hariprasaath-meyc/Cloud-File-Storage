@@ -1,6 +1,10 @@
 from fastapi import APIRouter, Depends, status
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.modules.auth.dependencies import get_current_user
+from app.infrastructure.database.session import get_db
+from app.modules.users.dependencies import get_authenticated_user
+from app.modules.users.models import User
+
 from app.modules.files.schemas import (
     UploadURLRequest,
     UploadURLResponse,
@@ -12,24 +16,27 @@ from app.modules.files.s3_service import S3Service
 router = APIRouter(prefix="/files", tags=["Files"])
 
 
-def get_file_service() -> FileService:
-    s3_service = S3Service()
-    return FileService(s3_service=s3_service)
+def get_file_service(
+    db: AsyncSession = Depends(get_db),
+) -> FileService:
+    return FileService(
+        db=db,
+        s3_service=S3Service(),
+    )
 
 
 @router.post(
     "/upload-url",
     response_model=UploadURLResponse,
-    status_code=status.HTTP_200_OK,
+    status_code=status.HTTP_201_CREATED,
 )
-def generate_upload_url(
+async def generate_upload_url(
     payload: UploadURLRequest,
-    current_user: dict = Depends(get_current_user),
+    current_user: User = Depends(get_authenticated_user),
     file_service: FileService = Depends(get_file_service),
 ):
-    return file_service.generate_upload_url(
-        user_id=current_user["sub"],
+    return await file_service.generate_upload_url(
+        user_id=current_user.id,
         filename=payload.filename,
         content_type=payload.content_type,
     )
-
