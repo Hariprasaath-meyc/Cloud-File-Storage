@@ -83,7 +83,11 @@ class File(Base):
         nullable=True,
     )
 
-
+    idempotency_key: Mapped[UUID] = mapped_column(
+    UUID(as_uuid=True),
+    nullable=False,
+    unique=True,
+    )   
     upload_expires_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         nullable=False,

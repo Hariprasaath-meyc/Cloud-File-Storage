@@ -22,3 +22,7 @@ class UploadURLResponse(BaseModel):
     upload_url: str
     object_key: str
     expires_in: int
+
+class UpdateFileVersionRequest(BaseModel):
+    filename: str = Field(min_length=1)
+    content_type: str

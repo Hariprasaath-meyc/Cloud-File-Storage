@@ -42,3 +42,26 @@ class S3Service:
             "category": category,
             "expires_in": expires_in,
         }
+    
+    def generate_version_upload_url(
+    self,
+    bucket_name: str,
+    object_key: str,
+    content_type: str,
+    expires_in: int = 300,
+    ) -> dict:
+
+        upload_url = self.s3_client.generate_presigned_url(
+            ClientMethod="put_object",
+            Params={
+                "Bucket": bucket_name,
+                "Key": object_key,
+                "ContentType": content_type,
+            },
+            ExpiresIn=expires_in,
+        )
+
+        return {
+            "upload_url": upload_url,
+            "expires_in": expires_in,
+        }
