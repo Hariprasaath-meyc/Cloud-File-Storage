@@ -14,6 +14,9 @@ class Settings(BaseSettings):
     # S3
     s3_bucket_name: str
 
+    #SNS
+    sns_audit_topic_arn: str
+
     # Cognito
     cognito_user_pool_id: str
     cognito_client_id: str
